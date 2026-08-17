@@ -14,6 +14,9 @@ Shared wire protocol for the remote-control capability: envelope types, message 
 | `response` | device → app | `{ result }` | Command result |
 | `error` | any | `{ code, message }` | Recoverable failure |
 | `ping` / `pong` | any | `{}` | Heartbeat |
+| `resume` | app → relay | `{ token }` | Re-establish a session with a stored token, no new code |
+| `sessions.list` | device ↔ relay | request `{}` / response `{ sessions }` | Bound app sessions of the device |
+| `sessions.revoke` | device → relay | `{ sessionId }` | Drop one app session; the phone must pair again |
 
 `parseMessage(text)` validates the envelope (JSON shape, known `type`, present `payload`) and throws `ProtocolError` with a stable machine-readable `code` on malformed input. `serializeMessage(envelope)` is the inverse.
 
