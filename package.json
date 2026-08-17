@@ -1,7 +1,7 @@
-{
+﻿{
   "name": "@firefly0621/dsh-remote-protocol",
   "description": "Shared remote-control wire protocol: envelope types, message validation, constants",
-  "version": "0.1.0-rc.5",
+  "version": "0.1.0-rc.6",
   "publishConfig": {
     "access": "public"
   },
