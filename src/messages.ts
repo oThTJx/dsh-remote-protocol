@@ -18,6 +18,8 @@ const MESSAGE_TYPES = new Set<MessageType>([
   'event',
 ])
 
+const EVENT_NAMES = new Set<string>(['chat/start', 'chat/chunk', 'chat/done', 'chat/error'])
+
 /** Parse one wire text into a validated envelope, rejecting malformed input. */
 export function parseMessage(text: string): Envelope {
   let raw: unknown
@@ -35,6 +37,14 @@ export function parseMessage(text: string): Envelope {
   }
   if (!('payload' in raw) || (raw as { payload?: unknown }).payload === undefined) {
     throw new ProtocolError('protocol.invalid', 'message is missing payload')
+  }
+  // The event vocabulary is a closed set: reject unknown push names at the
+  // wire boundary so peers cannot smuggle arbitrary event strings through.
+  if (type === 'event') {
+    const event = (raw as { payload: { event?: unknown } }).payload.event
+    if (typeof event !== 'string' || !EVENT_NAMES.has(event)) {
+      throw new ProtocolError('protocol.invalid', `unknown event: ${String(event)}`)
+    }
   }
   return raw as unknown as Envelope
 }

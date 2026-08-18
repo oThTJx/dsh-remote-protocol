@@ -31,6 +31,13 @@ describe('remote protocol messages', () => {
     expect(parseMessage(JSON.stringify({ type: 'sessions.revoke', payload: { sessionId: 's' } })).type).toBe('sessions.revoke')
   })
 
+  it('accepts known chat events and rejects unknown event names', () => {
+    expect(parseMessage(JSON.stringify({ type: 'event', payload: { event: 'chat/chunk', payload: { text: 'hi' } } })).type).toBe('event')
+    expect(() => parseMessage(JSON.stringify({ type: 'event', payload: { event: 'system.exec', payload: {} } })))
+      .toThrow(/unknown event/)
+    expect(() => parseMessage(JSON.stringify({ type: 'event', payload: { payload: {} } }))).toThrow(/unknown event/)
+  })
+
   it('exposes a stable machine-readable error code', () => {
     try {
       parseMessage('nope')
