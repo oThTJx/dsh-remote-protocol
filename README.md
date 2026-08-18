@@ -1,5 +1,7 @@
 # @firefly0621/dsh-remote-protocol
 
+English | [中文](README.zh.md)
+
 Shared wire protocol for the remote-control capability: envelope types, message validation, and timing constants. Zero runtime dependencies — the relay server, the host plugin, and the mobile PWA all consume the same vocabulary through this package, so a message shape can never drift between peers.
 
 ## Message vocabulary
