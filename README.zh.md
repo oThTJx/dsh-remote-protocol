@@ -19,6 +19,7 @@
 | `resume` | App → 中继 | `{ token }` | 用存储的 token 恢复会话，无需新配对码 |
 | `sessions.list` | 设备 ↔ 中继 | 请求 `{}` / 响应 `{ sessions }` | 设备的已绑定 App 会话 |
 | `sessions.revoke` | 设备 → 中继 | `{ sessionId }` | 丢弃一个 App 会话；手机需重新配对 |
+| `event` | 设备 → 中继 → App | `{ event, payload }` | 向该设备绑定的每个 App 会话单向推送；承载聊天流事件（`chat/start` `{ sessionId }`、`chat/chunk` `{ text }`、`chat/done` `{ text }`、`chat/error` `{ code, message }`） |
 
 `parseMessage(text)` 校验信封（JSON 形状、已知 `type`、存在 `payload`），输入畸形时抛出带稳定机器可读 `code` 的 `ProtocolError`。`serializeMessage(envelope)` 是其逆操作。
 

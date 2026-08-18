@@ -15,6 +15,7 @@ const MESSAGE_TYPES = new Set<MessageType>([
   'hello', 'pair', 'pair-result', 'pairing.issue',
   'request', 'response', 'error', 'ping', 'pong',
   'resume', 'sessions.list', 'sessions.revoke',
+  'event',
 ])
 
 /** Parse one wire text into a validated envelope, rejecting malformed input. */

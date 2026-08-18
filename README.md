@@ -19,6 +19,7 @@ Shared wire protocol for the remote-control capability: envelope types, message 
 | `resume` | app → relay | `{ token }` | Re-establish a session with a stored token, no new code |
 | `sessions.list` | device ↔ relay | request `{}` / response `{ sessions }` | Bound app sessions of the device |
 | `sessions.revoke` | device → relay | `{ sessionId }` | Drop one app session; the phone must pair again |
+| `event` | device → relay → app | `{ event, payload }` | One-way push to every app session bound to the device; carries chat stream events (`chat/start` `{ sessionId }`, `chat/chunk` `{ text }`, `chat/done` `{ text }`, `chat/error` `{ code, message }`) |
 
 `parseMessage(text)` validates the envelope (JSON shape, known `type`, present `payload`) and throws `ProtocolError` with a stable machine-readable `code` on malformed input. `serializeMessage(envelope)` is the inverse.
 

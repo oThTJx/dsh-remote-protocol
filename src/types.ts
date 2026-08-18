@@ -3,6 +3,7 @@ export type MessageType =
   | 'hello' | 'pair' | 'pair-result' | 'pairing.issue'
   | 'request' | 'response' | 'error' | 'ping' | 'pong'
   | 'resume' | 'sessions.list' | 'sessions.revoke'
+  | 'event'
 
 /** Public wire envelope: every message carries a type and a payload. */
 export interface Envelope<T extends object = object> {
@@ -32,3 +33,17 @@ export interface SessionInfo { sessionId: string; deviceName: string; createdAt:
 export interface SessionsListPayload { sessions?: SessionInfo[] }
 /** Device → relay: revoke one app session; relay echoes with `revoked`. */
 export interface SessionsRevokePayload { sessionId: string; revoked?: boolean }
+
+/** Device → relay → app: one asynchronous push (e.g. chat stream events). */
+export interface EventPayload { event: string; payload: unknown }
+
+/** Chat stream event names pushed from the device to a bound app. */
+export type ChatEventName = 'chat/start' | 'chat/chunk' | 'chat/done' | 'chat/error'
+/** `chat/start`: the agent accepted the message and began generating. */
+export interface ChatStartPayload { sessionId: string }
+/** `chat/chunk`: one text delta of the assistant reply. */
+export interface ChatChunkPayload { text: string }
+/** `chat/done`: the complete assistant reply text. */
+export interface ChatDonePayload { text: string }
+/** `chat/error`: the turn failed; `code` is machine-readable. */
+export interface ChatErrorPayload { code: string; message: string }
