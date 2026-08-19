@@ -25,6 +25,25 @@ describe('remote protocol messages', () => {
     expect(() => parseMessage(JSON.stringify({ type: 'ping' }))).toThrow(/missing payload/)
   })
 
+  it('rejects a null, array, or non-object payload instead of crashing consumers', () => {
+    expect(() => parseMessage(JSON.stringify({ type: 'hello', payload: null }))).toThrow(/payload must be a JSON object/)
+    expect(() => parseMessage(JSON.stringify({ type: 'request', payload: [1, 2] }))).toThrow(/payload must be a JSON object/)
+    expect(() => parseMessage(JSON.stringify({ type: 'event', payload: 'x' }))).toThrow(/payload must be a JSON object/)
+  })
+
+  it('rejects oversized messages before parsing them', () => {
+    const huge = `{"type":"ping","payload":{}${' ,"pad":"x"'.repeat(200_000)}}`
+    expect(huge.length).toBeGreaterThan(1_000_000)
+    expect(() => parseMessage(huge)).toThrow(/too large/)
+  })
+
+  it('does not echo caller-controlled input in error messages', () => {
+    expect(() => parseMessage(JSON.stringify({ type: '<script>alert(1)</script>', payload: {} })))
+      .toThrow(/unknown message type/) // the payload string, not the type name
+    expect(() => parseMessage(JSON.stringify({ type: 'event', payload: { event: '"><img onerror=1>' } })))
+      .toThrow(/unknown event/)
+  })
+
   it('accepts resume / sessions.list / sessions.revoke types', () => {
     expect(parseMessage(JSON.stringify({ type: 'resume', payload: { token: 't' } })).type).toBe('resume')
     expect(parseMessage(JSON.stringify({ type: 'sessions.list', payload: {} })).type).toBe('sessions.list')

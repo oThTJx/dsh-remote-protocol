@@ -8,3 +8,5 @@ export const PAIRING_CODE_LENGTH = 6
 export const PAIRING_CODE_TTL_MS = 600_000
 /** Wrong attempts before a pairing code is invalidated. */
 export const PAIRING_MAX_ATTEMPTS = 5
+/** Largest accepted wire text; mirrors the relay's 1 MiB maxPayload. */
+export const MAX_MESSAGE_CHARS = 1_000_000
